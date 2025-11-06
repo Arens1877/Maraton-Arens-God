@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maratón de Arens God</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff1a75;
+            --secondary-color: #6a0dad;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --accent-color: #00f3ff;
+            --card-bg: rgba(30, 30, 50, 0.85);
+            --border-radius: 16px;
+            --shadow: 0 10px 30px rgba(255, 26, 117, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: var(--light-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255, 26, 117, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(106, 13, 173, 0.15) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 26, 117, 0.5);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .app-subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            opacity: 0.9;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        #anime-search {
+            flex: 1;
+            padding: 16px 20px;
+            border: 3px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            background: var(--card-bg);
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        #anime-search:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 26, 117, 0.5);
+            border-color: var(--accent-color);
+        }
+
+        #search-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0 30px;
+            border-radius: var(--border-radius);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        #search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(255, 26, 117, 0.4);
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .results-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .anime-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 26, 117, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .anime-header {
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .anime-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .anime-card:hover .anime-cover {
+            transform: scale(1.05);
+        }
+
+        .anime-info {
+            padding: 1.5rem;
+        }
+
+        .anime-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .anime-details {
+            display: flex;
+            justify-content: space-around;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: rgba(106, 13, 173, 0.2);
+            border-radius: 10px;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .anime-synopsis {
+            margin: 1rem 0;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            max-height: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+        }
+
+        .anime-synopsis::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(to top, var(--card-bg), transparent);
+        }
+
+        .watch-planner {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            border: 1px solid var(--accent-color);
+        }
+
+        .planner-title {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .planner-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .planner-option {
+            background: rgba(255, 26, 117, 0.2);
+            border: 1px solid var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .planner-option:hover, .planner-option.active {
+            background: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .time-result {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-top: 0.5rem;
+            min-height: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+        }
+
+        .otaku-decoration {
+            position: absolute;
+            opacity: 0.1;
+            font-size: 4rem;
+            z-index: -1;
+        }
+
+        .decoration-1 {
+            top: 10%;
+            left: 5%;
+            transform: rotate(15deg);
+        }
+
+        .decoration-2 {
+            bottom: 15%;
+            right: 5%;
+            transform: rotate(-15deg);
+        }
+
+        .anime-rating {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 0.5rem 0;
+        }
+
+        .star {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.3rem;
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 767px) {
+            .app-title {
+                font-size: 2.5rem;
+            }
+            
+            .anime-header {
+                height: 200px;
+            }
+            
+            .anime-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="otaku-decoration decoration-1">
+        <i class="fas fa-dragon"></i>
+    </div>
+    <div class="otaku-decoration decoration-2">
+        <i class="fas fa-swords"></i>
+    </div>
+
+    <header class="header">
+        <h1 class="app-title">Maratón de Arens God</h1>
+        <p class="app-subtitle">Descubre tu próximo anime y planifica tu maratón perfecta</p>
+    </header>
+
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="anime-search" placeholder="Busca tu anime favorito..." autocomplete="off">
+            <button id="search-btn">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+        </div>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <!-- Los resultados se cargarán aquí dinámicamente -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('anime-search');
+            const searchBtn = document.getElementById('search-btn');
+            const resultsContainer = document.getElementById('results-container');
+
+            // Event listeners
+            searchBtn.addEventListener('click', searchAnime);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchAnime();
+                }
+            });
+
+            // Cargar anime popular por defecto
+            loadPopularAnime();
+
+            function loadPopularAnime() {
+                // Mostrar loading
+                resultsContainer.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando animes populares...
+                    </div>
+                `;
+
+                // Obtener top animes usando Jikan API
+                fetch('https://api.jikan.moe/v4/top/anime?limit=6')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Error al cargar los animes populares');
+                        return response.json();
+                    })
+                    .then(data => {
+                        displayAnimeResults(data.data);
+                    })
+                    .catch(error => {
+                        resultsContainer.innerHTML = `
+                            <div class="error">
+                                <i class="fas fa-exclamation-triangle"></i> ${error.message}
+                            </div>
+                        `;
+                        console.error('Error:', error);
+                    });
+            }
+
+            function searchAnime() {
+                const query = searchInput.value.trim();
+                if (!query) return;
+
+                resultsContainer.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Buscando "${query}"...
+                    </div>
+                `;
+
+                // Usar Jikan API para buscar animes
+                fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=6`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('No se encontraron resultados');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.data.length === 0) {
+                            resultsContainer.innerHTML = `
+                                <div class="no-results">
+                                    <i class="fas fa-search"></i> No se encontraron animes para "${query}"
+                                </div>
+                            `;
+                            return;
+                        }
+                        displayAnimeResults(data.data);
+                    })
+                    .catch(error => {
+                        resultsContainer.innerHTML = `
+                            <div class="no-results">
+                                <i class="fas fa-exclamation-triangle"></i> ${error.message}
+                            </div>
+                        `;
+                        console.error('Error:', error);
+                    });
+            }
+
+            function displayAnimeResults(animes) {
+                resultsContainer.innerHTML = '';
+                
+                animes.forEach(anime => {
+                    const animeCard = createAnimeCard(anime);
+                    resultsContainer.appendChild(animeCard);
+                });
+            }
+
+            function createAnimeCard(anime) {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                
+                // Obtener imagen (usar la mejor calidad disponible)
+                const imageUrl = anime.images.jpg.large_image_url || anime.images.jpg.image_url || anime.images.webp.large_image_url || anime.images.webp.image_url;
+                
+                // Formatear sinopsis (limitar longitud)
+                let synopsis = anime.synopsis || 'Sinopsis no disponible';
+                if (synopsis.length > 250) {
+                    synopsis = synopsis.substring(0, 250) + '...';
+                }
+                
+                // Calcular duración total en minutos
+                const totalMinutes = anime.episodes * (anime.duration || 24);
+                const totalHours = Math.floor(totalMinutes / 60);
+                const remainingMinutes = totalMinutes % 60;
+                
+                // Calcular días para diferentes ritmos de visionado
+                const episodesPerDayOptions = [1, 2, 3, 5, 10, 20];
+                
+                card.innerHTML = `
+                    <div class="anime-header">
+                        <img src="${imageUrl}" alt="${anime.title}" class="anime-cover" onerror="this.src='https://via.placeholder.com/300x450/1a1a2e/6a0dad?text=Anime+Cover'">
+                    </div>
+                    <div class="anime-info">
+                        <h2 class="anime-title">${anime.title}</h2>
+                        
+                        <div class="anime-details">
+                            <div class="detail-item">
+                                <div class="detail-value">${anime.episodes || '?'}</div>
+                                <div class="detail-label">Episodios</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">${anime.duration || '?'} min</div>
+                                <div class="detail-label">por episodio</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">${anime.score || 0}/10</div>
+                                <div class="detail-label">Puntuación</div>
+                            </div>
+                        </div>
+                        
+                        <div class="anime-rating">
+                            ${getStarRating(anime.score)}
+                        </div>
+                        
+                        <div class="anime-synopsis">
+                            ${synopsis}
+                        </div>
+                        
+                        <div class="watch-planner">
+                            <h3 class="planner-title">Planifica tu Maratón</h3>
+                            <div class="planner-options" data-episodes="${anime.episodes || 0}">
+                                ${episodesPerDayOptions.map(episodes => 
+                                    `<div class="planner-option" data-episodes="${episodes}">
+                                        ${episodes} eps/día
+                                    </div>`
+                                ).join('')}
+                            </div>
+                            <div class="time-result" id="time-result-${anime.mal_id}">
+                                Selecciona un ritmo de visionado
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Añadir eventos a los botones de planificación
+                const plannerOptions = card.querySelectorAll('.planner-option');
+                const timeResult = card.querySelector('.time-result');
+                const totalEpisodes = anime.episodes || 0;
+                
+                plannerOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        plannerOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        const episodesPerDay = parseInt(this.dataset.episodes);
+                        const days = Math.ceil(totalEpisodes / episodesPerDay);
+                        
+                        let timeText = '';
+                        if (days === 1) {
+                            timeText = `¡Terminarás en 1 día!`;
+                        } else if (days <= 7) {
+                            timeText = `Terminarás en ${days} días`;
+                        } else if (days <= 30) {
+                            const weeks = Math.ceil(days / 7);
+                            timeText = `Terminarás en ${weeks} semana${weeks > 1 ? 's' : ''}`;
+                        } else {
+                            const months = Math.ceil(days / 30);
+                            timeText = `Terminarás en ${months} mes${months > 1 ? 'es' : ''}`;
+                        }
+                        
+                        timeResult.textContent = timeText;
+                    });
+                });
+                
+                return card;
+            }
+
+            function getStarRating(score) {
+                if (!score) return '';
+                const stars = Math.round(score / 2); // Convertir de 10 a 5 estrellas
+                let html = '';
+                for (let i = 0; i < 5; i++) {
+                    html += i < stars ? '<i class="fas fa-star star"></i>' : '<i class="far fa-star star"></i>';
+                }
+                return html;
+            }
+
+            // Añadir algunos estilos adicionales para las animaciones
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                    100% { transform: scale(1); }
+                }
+                .pulse {
+                    animation: pulse 2s infinite;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
